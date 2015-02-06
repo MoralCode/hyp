@@ -113,7 +113,8 @@ class BaseResponder(object):
                     continue
 
             if collector is not None:
-                builder = lambda instance: self.collect(collector, link, instance, 'id')
+                responder = properties['responder']
+                builder = lambda instance: self.collect(collector, responder, link, instance, 'id')
             else:
                 builder = lambda instance: self.pick(instance, 'id')
             resource_links[link] = self.apply_to_object_or_list(builder, associated)
@@ -126,8 +127,14 @@ class BaseResponder(object):
         else:
             return func(object_or_list)
 
-    def collect(self, collector, type, instance, key):
-        collector[type].append(instance)
+    def collect(self, collector, responder, type, instance, key):
+        responder_instance = responder()
+        if responder.LINKS and self.pick(instance, key):
+            responder_links = responder.LINKS.keys()
+            resource = responder_instance.build_resource(instance, responder_links, collector)
+            collector[type].append(resource)
+        else:
+            collector[type].append(instance)
 
         return self.pick(instance, key)
 

@@ -1,6 +1,7 @@
 """Base classes for the ``Responders`` and ``Adapters``.
 """
 import json
+from collections import defaultdict
 
 from six import iteritems
 
@@ -24,7 +25,7 @@ class BaseResponder(object):
     def respond(cls, *args, **kwargs):
         return json.dumps(cls()._respond(*args, **kwargs))
 
-    def _respond(self, instance_or_instances, meta=None, links=None, linked=None):
+    def _respond(self, instance_or_instances, meta=None, links=None, linked=None, collect=False):
         links = self.links(links, linked)
 
         document = {}
@@ -38,7 +39,13 @@ class BaseResponder(object):
         if linked is not None:
             document['linked'] = self.build_root_linked(linked)
 
-        document[self.TYPE] = self.build_resources(instance_or_instances, links)
+        if collect:
+            collector = defaultdict(list)
+            document[self.TYPE] = self.build_resources(instance_or_instances, links, collector)
+            document['linked'] = dict(collector.items())
+        else:
+            document[self.TYPE] = self.build_resources(instance_or_instances, links)
+
 
         return document
 
@@ -79,17 +86,17 @@ class BaseResponder(object):
 
         return rv
 
-    def build_resources(self, instance_or_instances, links=None):
-        builder = lambda instance: self.build_resource(instance, links)
+    def build_resources(self, instance_or_instances, links=None, collector=None):
+        builder = lambda instance: self.build_resource(instance, links, collector)
         return self.apply_to_object_or_list(builder, instance_or_instances)
 
-    def build_resource(self, instance, links=None):
+    def build_resource(self, instance, links=None, collector=None):
         resource = self.adapter(instance)
         if links is not None:
-            resource['links'] = self.build_resource_links(instance, links)
+            resource['links'] = self.build_resource_links(instance, links, collector)
         return resource
 
-    def build_resource_links(self, instance, links):
+    def build_resource_links(self, instance, links, collector=None):
         resource_links = {}
 
         for link in links:
@@ -105,7 +112,10 @@ class BaseResponder(object):
                 if associated is None:
                     continue
 
-            builder = lambda instance: self.pick(instance, 'id')
+            if collector is not None:
+                builder = lambda instance: self.collect(collector, link, instance, 'id')
+            else:
+                builder = lambda instance: self.pick(instance, 'id')
             resource_links[link] = self.apply_to_object_or_list(builder, associated)
 
         return resource_links
@@ -115,6 +125,11 @@ class BaseResponder(object):
             return list(map(func, object_or_list))
         else:
             return func(object_or_list)
+
+    def collect(self, collector, type, instance, key):
+        collector[type].append(instance)
+
+        return self.pick(instance, key)
 
     def pick(self, instance, key):
         try:

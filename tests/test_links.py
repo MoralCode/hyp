@@ -51,6 +51,31 @@ class TestLinks(object):
             }
         }
 
+    def test_one_to_one_with_collect(self):
+        author = {'id': 1}
+        post = {'id': 1, 'title': 'My title', 'author': author}
+
+        response = PostResponder.build(post, links=['author'], collect=True)
+
+        assert response == {
+            'posts': {
+                'id': 1,
+                'title': 'My title',
+                'links': {
+                    'author': 1,
+                }
+            },
+            'linked': {
+                'author': [author],
+            },
+            'links': {
+                'posts.author': {
+                    'href': 'http://example.com/people/{posts.author}',
+                    'type': 'people',
+                }
+            }
+        }
+
 
 class TestLinksWithMissingValues(object):
     def test_one_to_one_with_missing_value(self):

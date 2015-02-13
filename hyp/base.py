@@ -1,7 +1,7 @@
 """Base classes for the ``Responders`` and ``Adapters``.
 """
 import json
-from collections import defaultdict
+from .collector import Collector
 
 from six import iteritems
 
@@ -37,11 +37,12 @@ class BaseResponder(object):
             document['linked'] = self.build_root_linked(linked)
 
         if collect:
-            collector = defaultdict(list)
+            collector = Collector()
+
             links = self.LINKS.keys()
-            document['links'] = self.build_root_links(links)
             document[self.TYPE] = self.build_resources(instance_or_instances, links, collector)
-            document['linked'] = dict(collector.items())
+            document['linked'] = collector.get_linked_dict()
+            document['links'] = collector.get_links_dict()
         else:
             if links is not None:
                 document['links'] = self.build_root_links(links)
@@ -59,32 +60,26 @@ class BaseResponder(object):
         return meta
 
     def build_root_links(self, links):
-        rv = {}
-
+        # Use the collector to build the links structure
+        collector = Collector()
         for key in links:
-            link = self.LINKS[key]
-            association = "%s.%s" % (self.TYPE, key)
+            collector.use_link(self, key)
 
-            rv[association] = {'type': link['responder'].TYPE}
-            if 'href' in link:
-                rv[association]['href'] = link['href']
-
-        return rv
+        return collector.get_links_dict()
 
     def build_root_linked(self, linked):
-        rv = {}
+        collector = Collector()
 
         for key, instances in iteritems(linked):
             link = self.LINKS[key]
             responder = link['responder']()
 
-            if responder.TYPE not in rv:
-                rv[responder.TYPE] = []
+            for instance in instances:
+                id = self.pick(instance, 'id')
+                resource = responder.build_resource(instance)
+                collector.add_linked(responder.TYPE, id, resource)
 
-            [rv[responder.TYPE].append(responder.build_resource(instance))
-                for instance in instances]
-
-        return rv
+        return collector.get_linked_dict()
 
     def build_resources(self, instance_or_instances, links=None, collector=None):
         builder = lambda instance: self.build_resource(instance, links, collector)
@@ -105,6 +100,9 @@ class BaseResponder(object):
             try:
                 key = properties.get('key', link)
                 associated = self.pick(instance, key)
+                if collector:
+                    collector.use_link(self, link)
+
             except KeyError:
                 # Ignore links when not defined in the object
                 continue
@@ -134,14 +132,16 @@ class BaseResponder(object):
 
     def collect(self, collector, responder, type, instance, key):
         responder_instance = responder()
+        id = self.pick(instance, key)
+
         if responder.LINKS and self.pick(instance, key):
             responder_links = responder.LINKS.keys()
             resource = responder_instance.build_resource(instance, responder_links, collector)
-            collector[type].append(resource)
+            collector.add_linked(type, id, resource)
         else:
-            collector[type].append(instance)
+            collector.add_linked(type, id, instance)
 
-        return self.pick(instance, key)
+        return id
 
     def pick(self, instance, key):
         try:

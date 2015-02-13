@@ -33,19 +33,19 @@ class BaseResponder(object):
         if meta is not None:
             document['meta'] = self.build_root_meta(meta)
 
-        if links is not None:
-            document['links'] = self.build_root_links(links)
-
         if linked is not None:
             document['linked'] = self.build_root_linked(linked)
 
         if collect:
             collector = defaultdict(list)
+            links = self.LINKS.keys()
+            document['links'] = self.build_root_links(links)
             document[self.TYPE] = self.build_resources(instance_or_instances, links, collector)
             document['linked'] = dict(collector.items())
         else:
+            if links is not None:
+                document['links'] = self.build_root_links(links)
             document[self.TYPE] = self.build_resources(instance_or_instances, links)
-
 
         return document
 
@@ -101,8 +101,13 @@ class BaseResponder(object):
 
         for link in links:
             properties = self.LINKS[link]
-            key = properties.get('key', link)
-            associated = self.pick(instance, key)
+
+            try:
+                key = properties.get('key', link)
+                associated = self.pick(instance, key)
+            except KeyError:
+                # Ignore links when not defined in the object
+                continue
 
             if isinstance(associated, list):
                 associated = [i for i in associated if i is not None]

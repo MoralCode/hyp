@@ -33,22 +33,25 @@ class BaseResponder(object):
         if meta is not None:
             document['meta'] = self.build_root_meta(meta)
 
+        collector = Collector()
+
         if linked is not None:
-            document['linked'] = self.build_root_linked(linked)
+            self.build_root_linked(collector, linked)
+
+        if links is not None:
+            self.build_root_links(collector, links)
 
         if collect:
-            collector = Collector()
-
             links = self.LINKS.keys()
             document[self.TYPE] = self.build_resources(instance_or_instances, links, collector)
-            document['linked'] = collector.get_linked_dict()
-            document['links'] = collector.get_links_dict()
         else:
-            if links is not None:
-                document['links'] = self.build_root_links(links)
             document[self.TYPE] = self.build_resources(instance_or_instances, links)
 
-        return document
+        document['linked'] = collector.get_linked_dict()
+        document['links'] = collector.get_links_dict()
+
+        # Filter out empty lists
+        return dict([(k, d) for k, d in document.items() if d])
 
     def links(self, links, linked):
         if linked is not None:
@@ -59,17 +62,12 @@ class BaseResponder(object):
     def build_root_meta(self, meta):
         return meta
 
-    def build_root_links(self, links):
+    def build_root_links(self, collector, links):
         # Use the collector to build the links structure
-        collector = Collector()
         for key in links:
             collector.use_link(self, key)
 
-        return collector.get_links_dict()
-
-    def build_root_linked(self, linked):
-        collector = Collector()
-
+    def build_root_linked(self, collector, linked):
         for key, instances in iteritems(linked):
             link = self.LINKS[key]
             responder = link['responder']()
@@ -78,8 +76,6 @@ class BaseResponder(object):
                 id = self.pick(instance, 'id')
                 resource = responder.build_resource(instance)
                 collector.add_linked(responder.TYPE, id, resource)
-
-        return collector.get_linked_dict()
 
     def build_resources(self, instance_or_instances, links=None, collector=None):
         builder = lambda instance: self.build_resource(instance, links, collector)

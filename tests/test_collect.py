@@ -61,7 +61,7 @@ class TestCollect(object):
                 }
             },
             'linked': {
-                'author': [author],
+                'people': [author],
             },
             'links': {
                 'posts.author': {
@@ -94,7 +94,7 @@ class TestCollect(object):
                 }
             },
             'linked': {
-                'author': [author, flamer],
+                'people': [author, flamer],
                 'comments': [
                     {
                         'id': 1,

@@ -133,9 +133,9 @@ class BaseResponder(object):
         if responder.LINKS and self.pick(instance, key):
             responder_links = responder.LINKS.keys()
             resource = responder_instance.build_resource(instance, responder_links, collector)
-            collector.add_linked(type, id, resource)
+            collector.add_linked(responder.TYPE, id, resource)
         else:
-            collector.add_linked(type, id, instance)
+            collector.add_linked(responder.TYPE, id, instance)
 
         return id
 

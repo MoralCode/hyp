@@ -7,8 +7,8 @@ from fixtures import PostResponder, PostSerializer, CommentResponder
 class TestCollectorInternal(object):
     def test_collect_gather_links_unique(self):
         c = Collector()
-        c.use_link(CommentResponder(), 'author')
-        c.use_link(CommentResponder(), 'author')
+        c.include_link(CommentResponder(), 'author')
+        c.include_link(CommentResponder(), 'author')
 
         assert c.get_links_dict() == {
             'comments.author': {

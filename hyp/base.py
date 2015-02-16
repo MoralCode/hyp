@@ -65,7 +65,7 @@ class BaseResponder(object):
     def build_root_links(self, collector, links):
         # Use the collector to build the links structure
         for key in links:
-            collector.use_link(self, key)
+            collector.include_link(self, key)
 
     def build_root_linked(self, collector, linked):
         for key, instances in iteritems(linked):
@@ -97,7 +97,7 @@ class BaseResponder(object):
                 key = properties.get('key', link)
                 associated = self.pick(instance, key)
                 if collector:
-                    collector.use_link(self, link)
+                    collector.include_link(self, link)
 
             except KeyError:
                 # Ignore links when not defined in the object

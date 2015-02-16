@@ -10,7 +10,7 @@ class Collector(object):
         # Added to a dict to strip duplicates and sort results.
         self.linked[type][id] = resource
 
-    def use_link(self, responder, key):
+    def include_link(self, responder, key):
         # Flag each entry as they are used, final structure will
         # be built at the end.
         self.links[responder].add(key)

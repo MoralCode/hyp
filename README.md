@@ -80,7 +80,7 @@ json = PostResponder.respond(post, linked={'comments': post['comments']})
 
 ```
 
-Alternatively, the linked items can be automatically collected. The resulting structure will be the same.
+Alternatively, the linked items can be automatically collected. The resulting structure will be the same. The LINKS definitions in the responders will be used to identify the linked items in the provided data recursively. If the same element is referenced multiple times (identified by the id only), the last entry will be used.
 
 ```python
 post = {

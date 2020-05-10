@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "==2.5.2"
+coverage = "==3.7.1"
+factory-boy = "==2.3.1"
+tox = "==1.8.0"
+marshmallow = ">=1.0-a"
+schematics = ">=1.0"
+
+[packages]
+six = ">=1.8.0"
+
+[requires]
+python_version = "3.8"

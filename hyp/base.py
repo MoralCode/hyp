@@ -42,7 +42,7 @@ class BaseResponder(object):
             self.build_root_links(collector, links)
 
         if collect:
-            links = self.LINKS.keys()
+            links = list(self.LINKS.keys())
             document[self.TYPE] = self.build_resources(instance_or_instances, links, collector)
         else:
             document[self.TYPE] = self.build_resources(instance_or_instances, links)
@@ -51,11 +51,11 @@ class BaseResponder(object):
         document['links'] = collector.get_links_dict()
 
         # Filter out empty lists
-        return dict([(k, d) for k, d in document.items() if d])
+        return dict([(k, d) for k, d in list(document.items()) if d])
 
     def links(self, links, linked):
         if linked is not None:
-            links = linked.keys()
+            links = list(linked.keys())
 
         return links
 
@@ -131,7 +131,7 @@ class BaseResponder(object):
         id = self.pick(instance, key)
 
         if responder.LINKS and self.pick(instance, key):
-            responder_links = responder.LINKS.keys()
+            responder_links = list(responder.LINKS.keys())
             resource = responder_instance.build_resource(instance, responder_links, collector)
             collector.add_linked(responder.TYPE, id, resource)
         else:

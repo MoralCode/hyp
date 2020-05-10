@@ -10,7 +10,7 @@ class Adapter(BaseAdapter):
     def instance_to_model(self, instance):
         model = self.model_class()
 
-        for key, field in self.model_class.fields.iteritems():
+        for key, field in self.model_class.fields.items():
             setattr(model, key, self._pick(instance, key))
 
         return model

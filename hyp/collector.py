@@ -17,13 +17,13 @@ class Collector(object):
 
     def get_linked_dict(self):
         # Convert the defaultdict(dict) structure to a dict(list) structure
-        return dict([(k, list(items.values())) for k, items in self.linked.items()])
+        return dict([(k, list(items.values())) for k, items in list(self.linked.items())])
 
     def get_links_dict(self):
         # Build the links structure for the links that have been used
         rv = {}
 
-        for responder, keys in self.links.items():
+        for responder, keys in list(self.links.items()):
             for key in keys:
                 link = responder.LINKS[key]
                 association = "%s.%s" % (responder.TYPE, key)

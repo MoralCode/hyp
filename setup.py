@@ -19,6 +19,5 @@ setup(
     ],
     url='https://github.com/kalasjocke/hyp',
     description='Partial JSON API implementation in Python on top of Schematics',
-    long_description=open('README.md').read(),
-    install_requires=open('requirements.txt').read().split(),
+    long_description=open('README.md').read()
 )

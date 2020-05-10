@@ -9,6 +9,7 @@ coverage = ">=3.7.1"
 factory-boy = ">=2.3.1"
 marshmallow = ">=1.0-a"
 schematics = ">=1.0"
+importlib-metadata = "*"
 
 [packages]
 six = ">=1.8.0"

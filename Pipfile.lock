@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "84a41a364addaf58c45a5a812c24717d9883e6ace3b513e0caa355ac23e61886"
+            "sha256": "daf8f422d06318c1eb68cdf0bf8983fcc1da4666314034bde84d5e4f2463ee41"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -26,13 +26,6 @@
         }
     },
     "develop": {
-        "appdirs": {
-            "hashes": [
-                "sha256:9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92",
-                "sha256:d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"
-            ],
-            "version": "==1.4.3"
-        },
         "coverage": {
             "hashes": [
                 "sha256:2b9fe71a6bd410940cedb6212cecdf21280d4b3471c3a188f9c5263cfe6fb67b",
@@ -50,25 +43,12 @@
             "index": "pypi",
             "version": "==3.7.1"
         },
-        "distlib": {
-            "hashes": [
-                "sha256:2e166e231a26b36d6dfe35a48c4464346620f8645ed0ace01ee31822b288de21"
-            ],
-            "version": "==0.3.0"
-        },
         "factory-boy": {
             "hashes": [
                 "sha256:2ee51f31a17ec70adca416ad4bf4a0645bdfff3718fd5ee561eeb04aeaea08eb"
             ],
             "index": "pypi",
             "version": "==2.3.1"
-        },
-        "filelock": {
-            "hashes": [
-                "sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59",
-                "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"
-            ],
-            "version": "==3.0.12"
         },
         "marshmallow": {
             "hashes": [
@@ -99,28 +79,6 @@
             ],
             "index": "pypi",
             "version": "==2.1.0"
-        },
-        "six": {
-            "hashes": [
-                "sha256:236bdbdce46e6e6a3d61a337c0f8b763ca1e8717c03b369e87a7ec7ce1319c0a",
-                "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"
-            ],
-            "index": "pypi",
-            "version": "==1.14.0"
-        },
-        "tox": {
-            "hashes": [
-                "sha256:4583b8340279d8cf080082550f7a5f14ba838bed3b217a37f0ea305c271281c7"
-            ],
-            "index": "pypi",
-            "version": "==1.8.0"
-        },
-        "virtualenv": {
-            "hashes": [
-                "sha256:b4c14d4d73a0c23db267095383c4276ef60e161f94fde0427f2f21a0132dde74",
-                "sha256:fd0e54dec8ac96c1c7c87daba85f0a59a7c37fe38748e154306ca21c73244637"
-            ],
-            "version": "==20.0.20"
         }
     }
 }

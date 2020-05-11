@@ -28,7 +28,7 @@ class BaseResponder(object):
     def respond(cls, *args, **kwargs):
         return json.dumps(cls()._respond(*args, **kwargs))
 
-    def _respond(self, instance_or_instances, meta=None, links=None, linked=None, collect=False):
+    def _respond(self, instance_or_instances, meta=None, error=False, links=None, linked=None, collect=False):
         links = self.links(links, linked)
 
         document = {}
@@ -36,22 +36,30 @@ class BaseResponder(object):
         if meta is not None:
             document['meta'] = self.build_root_meta(meta)
 
-        collector = Collector()
+        if error:
+            #assumes the error object is ok since it's pretty loosely spec-ed 
+            if not isinstance(instance_or_instances, list):
+                document['errors'] = list(instance_or_instances)
+            else:
+                document['errors'] = instance_or_instances
 
-        if linked is not None:
-            self.build_root_linked(collector, linked)
-
-        if links is not None:
-            self.build_root_links(collector, links)
-
-        if collect:
-            links = list(self.LINKS.keys())
-            document = self.build_resources(instance_or_instances, links, collector)
         else:
-            document = self.build_resources(instance_or_instances, links)
+            collector = Collector()
 
-        document['linked'] = collector.get_linked_dict()
-        document['links'] = collector.get_links_dict()
+            if linked is not None:
+                self.build_root_linked(collector, linked)
+
+            if links is not None:
+                self.build_root_links(collector, links)
+
+            if collect:
+                links = list(self.LINKS.keys())
+                document = self.build_resources(instance_or_instances, links, collector)
+            else:
+                document = self.build_resources(instance_or_instances, links)
+
+            document['linked'] = collector.get_linked_dict()
+            document['links'] = collector.get_links_dict()
 
         # Filter out empty lists
         return dict([(k, d) for k, d in list(document.items()) if d])

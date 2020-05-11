@@ -11,6 +11,9 @@ class BaseResponder(object):
     SERIALIZER = None
     LINKS = None
     ADAPTER = None
+    # Responder can override this if the key to obtain the ID is
+    # something other than "id". responses always use the key "id" as per spec
+    id_access_key = "id" 
 
     def __init__(self):
         if not self.ADAPTER:
@@ -73,9 +76,8 @@ class BaseResponder(object):
             responder = link['responder']()
 
             for instance in instances:
-                id = self.pick(instance, 'id')
                 resource = responder.build_resource(instance)
-                collector.add_linked(responder.TYPE, id, resource)
+                collector.add_linked(responder.TYPE, self.id_access_key, resource)
 
     def build_resources(self, instance_or_instances, links=None, collector=None):
         builder = lambda instance: self.build_resource(instance, links, collector)
@@ -113,9 +115,9 @@ class BaseResponder(object):
 
             if collector is not None:
                 responder = properties['responder']
-                builder = lambda instance: self.collect(collector, responder, link, instance, 'id')
+                builder = lambda instance: self.collect(collector, responder, link, instance, responder.id_access_key)
             else:
-                builder = lambda instance: self.pick(instance, 'id')
+                builder = lambda instance: self.pick(instance, self.id_access_key)
             resource_links[link] = self.apply_to_object_or_list(builder, associated)
 
         return resource_links

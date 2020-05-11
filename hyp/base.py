@@ -46,9 +46,9 @@ class BaseResponder(object):
 
         if collect:
             links = list(self.LINKS.keys())
-            document[self.TYPE] = self.build_resources(instance_or_instances, links, collector)
+            document = self.build_resources(instance_or_instances, links, collector)
         else:
-            document[self.TYPE] = self.build_resources(instance_or_instances, links)
+            document = self.build_resources(instance_or_instances, links)
 
         document['linked'] = collector.get_linked_dict()
         document['links'] = collector.get_links_dict()

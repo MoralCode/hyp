@@ -38,7 +38,7 @@ class BaseResponder(object):
         }
 
         if meta is not None:
-            document['meta'] = self.build_root_meta(meta)
+            document['meta'] = self.build_meta(meta)
 
         if error:
             #assumes the error object is ok since it's pretty loosely spec-ed 
@@ -74,7 +74,8 @@ class BaseResponder(object):
 
         return links
 
-    def build_root_meta(self, meta):
+    #https://jsonapi.org/format/#document-meta
+    def build_meta(self, meta):
         return meta
 
     def build_root_links(self, collector, links):

@@ -31,7 +31,11 @@ class BaseResponder(object):
     def _respond(self, instance_or_instances, meta=None, error=False, links=None, linked=None, collect=False):
         links = self.links(links, linked)
 
-        document = {}
+        document = {
+            "jsonapi": {
+                "version": "1.0"
+            }
+        }
 
         if meta is not None:
             document['meta'] = self.build_root_meta(meta)

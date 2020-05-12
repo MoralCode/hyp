@@ -29,7 +29,6 @@ def build_links_object(links):
             meta_info = None
 
         links_object[key] = build_link(
-            value['responder'].TYPE,
             value['href'],
             meta = meta_info
         )
@@ -40,7 +39,7 @@ def build_links_object(links):
 #builds an individual link inside a links object
 #returns either a string or a "link object"
 # see https://jsonapi.org/format/#document-links
-def build_link(key, url, meta=None):
+def build_link(url, meta=None):
     if meta is not None:
         link = {}
         link['href'] = url

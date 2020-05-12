@@ -7,6 +7,9 @@ from six import iteritems
 
 from .helpers import *
 
+class NonCompliantException(Exception):
+    pass
+
 class BaseResponder(object):
     TYPE = None
     SERIALIZER = None

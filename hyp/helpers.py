@@ -4,6 +4,9 @@
 def build_resource_identifier(type, id):
     return {"type": type, "id": id}
 
+#https://jsonapi.org/format/#document-meta
+def build_meta(meta):
+    return meta
 
 # https://jsonapi.org/format/#document-links
 def build_links_object(links):
@@ -41,7 +44,7 @@ def build_link(key, url, meta=None):
     if meta is not None:
         link = {}
         link['href'] = url
-        link['meta'] = self.build_meta(meta)
+        link['meta'] = build_meta(meta)
         return link
     else:
         return url

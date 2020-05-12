@@ -22,7 +22,7 @@ def build_links_object(links):
     # "more keys" : {...},
     # ...
     # }
-    for key, value in links:
+    for key, value in links.items():
         try:
             meta_info = value['meta']
         except KeyError:

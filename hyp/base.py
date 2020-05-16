@@ -32,7 +32,7 @@ class BaseResponder(object):
     def respond(cls, *args, **kwargs):
         return json.dumps(cls()._respond(*args, **kwargs))
 
-    def _respond(self, instance_or_instances, meta=None, error=False, links=None, linked=None, collect=False):
+    def _respond(self, instance_or_instances, meta=None, error=False, links=None, linked=None, collect=False, compound=False):
         links = self.links(links, linked)
 
         document = {
@@ -66,7 +66,9 @@ class BaseResponder(object):
             else:
                 document = self.build_resources(instance_or_instances, links)
 
-            document['linked'] = collector.get_linked_dict()
+            if compound:
+                document['included'] = collector.get_linked_dict()
+            
             document['links'] = collector.get_links_dict()
 
         # Filter out empty lists

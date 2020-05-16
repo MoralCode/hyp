@@ -52,6 +52,7 @@ class BaseResponder(object):
                 document['errors'] = instance_or_instances
 
         else:
+            data = {}
             collector = Collector()
 
             if linked is not None:
@@ -62,14 +63,16 @@ class BaseResponder(object):
 
             if collect:
                 links = list(self.LINKS.keys())
-                document = self.build_resources(instance_or_instances, links, collector)
+                data = self.build_resources(instance_or_instances, links, collector)
             else:
-                document = self.build_resources(instance_or_instances, links)
+                data = self.build_resources(instance_or_instances, links)
 
             if compound:
                 document['included'] = collector.get_linked_dict()
             
             document['links'] = collector.get_links_dict()
+
+            document['data'] = data
 
         # Filter out empty lists
         return dict([(k, d) for k, d in list(document.items()) if d])

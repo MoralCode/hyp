@@ -33,7 +33,7 @@ class BaseResponder(object):
     def respond(cls, *args, **kwargs):
         return json.dumps(cls()._respond(*args, **kwargs))
 
-    def _respond(self, instance_or_instances, meta=None, error=False, links=None, related=None, collect=False, compound=False):
+    def _respond(self, instance_or_instances, meta=None, error=False, links=None, related=None, collect=False, compound=True):
         links = self.links(links, related)
 
         document = {

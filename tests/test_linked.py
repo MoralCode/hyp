@@ -7,7 +7,7 @@ from fixtures import (
 )
 
 
-class TestLinked(object):
+class TestIncluded(object):
     def test_single(self):
         author = {'id': 1, 'name': 'John'}
         comments = [
@@ -16,7 +16,7 @@ class TestLinked(object):
         ]
         post = {'id': 1, 'title': 'My title', 'comments': comments, 'author': author}
 
-        response = PostResponder.build(post, linked={
+        response = PostResponder.build(post, related={
             'comments': comments, 'author': [author]
         })
 
@@ -39,7 +39,7 @@ class TestLinked(object):
                     'type': 'comments',
                 }
             },
-            'linked': {
+            'included': {
                 'comments': [
                     {'id': 1, 'content': 'My comment'},
                     {'id': 2, 'content': 'Another comment'},
@@ -69,16 +69,16 @@ class TestLinked(object):
         coauthor = {'id': 2, 'name': 'Lisa'}
         post = {'id': 1, 'title': 'My title', 'author': author, 'coauthor': coauthor}
 
-        response = MultipleAuthorsResponder.build(post, linked={
+        response = MultipleAuthorsResponder.build(post, related={
             'author': [author], 'coauthor': [coauthor]
         })
 
-        assert len(response['linked']['people']) == 2
-        ids = [person['id'] for person in response['linked']['people']]
+        assert len(response['included']['people']) == 2
+        ids = [person['id'] for person in response['included']['people']]
         assert 1 in ids
         assert 2 in ids
 
-    def test_custom_linked_key(self):
+    def test_custom_included_key(self):
         class CustomPostResponder(SchematicsResponder):
             TYPE = 'posts'
             SERIALIZER = PostSerializer
@@ -93,7 +93,7 @@ class TestLinked(object):
         author = {'id': 1, 'name': 'John'}
         post = {'id': 1, 'title': 'My title', 'writer': author}
 
-        response = CustomPostResponder.build(post, linked={
+        response = CustomPostResponder.build(post, related={
             'author': [author],
         })
 
@@ -111,7 +111,7 @@ class TestLinked(object):
                     'type': 'people',
                 }
             },
-            'linked': {
+            'included': {
                 'people': [
                     {'id': 1, 'name': 'John'},
                 ],

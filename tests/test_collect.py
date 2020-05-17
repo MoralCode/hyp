@@ -7,8 +7,8 @@ from fixtures import PostResponder, PostSerializer, CommentResponder
 class TestCollectorInternal(object):
     def test_collect_gather_links_unique(self):
         c = Collector()
-        c.include_link(CommentResponder(), 'author')
-        c.include_link(CommentResponder(), 'author')
+        c.link(CommentResponder(), 'author')
+        c.link(CommentResponder(), 'author')
 
         assert c.get_links_dict() == {
             'comments.author': {
@@ -17,13 +17,13 @@ class TestCollectorInternal(object):
             },
         }
 
-    def test_linked_items_get_sorted(self):
+    def test_included_items_get_sorted(self):
         c = Collector()
-        c.add_linked('people', 1, {'id': 1})
-        c.add_linked('people', 3, {'id': 3})
-        c.add_linked('people', 2, {'id': 2})
+        c.include('people', 1, {'id': 1})
+        c.include('people', 3, {'id': 3})
+        c.include('people', 2, {'id': 2})
 
-        assert c.get_linked_dict() == {
+        assert c.get_included_resources() == {
             'people': [
                 {'id': 1},
                 {'id': 2},
@@ -33,11 +33,11 @@ class TestCollectorInternal(object):
 
     def test_duplicates_get_removed(self):
         c = Collector()
-        c.add_linked('people', 1, {'id': 1})
-        c.add_linked('people', 1, {'id': 1})
-        c.add_linked('people', 2, {'id': 2})
+        c.include('people', 1, {'id': 1})
+        c.include('people', 1, {'id': 1})
+        c.include('people', 2, {'id': 2})
 
-        assert c.get_linked_dict() == {
+        assert c.get_included_resources() == {
             'people': [
                 {'id': 1},
                 {'id': 2},
@@ -60,7 +60,7 @@ class TestCollect(object):
                     'author': 1,
                 }
             },
-            'linked': {
+            'included': {
                 'people': [author],
             },
             'links': {
@@ -93,7 +93,7 @@ class TestCollect(object):
                     'comments': [1],
                 }
             },
-            'linked': {
+            'included': {
                 'people': [author, flamer],
                 'comments': [
                     {

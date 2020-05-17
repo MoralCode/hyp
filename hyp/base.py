@@ -32,8 +32,8 @@ class BaseResponder(object):
     def respond(cls, *args, **kwargs):
         return json.dumps(cls()._respond(*args, **kwargs))
 
-    def _respond(self, instance_or_instances, meta=None, error=False, links=None, linked=None, collect=False, compound=False):
-        links = self.links(links, linked)
+    def _respond(self, instance_or_instances, meta=None, error=False, links=None, related=None, collect=False, compound=False):
+        links = self.links(links, related)
 
         document = {
             "jsonapi": {
@@ -55,11 +55,11 @@ class BaseResponder(object):
             data = {}
             collector = Collector()
 
-            if linked is not None:
-                self.build_root_linked(collector, linked)
+            if related is not None:
+                self.collect_included(collector, related)
 
             if links is not None:
-                self.build_root_links(collector, links)
+                self.collect_links(collector, links)
 
             if collect:
                 links = list(self.LINKS.keys())
@@ -68,7 +68,7 @@ class BaseResponder(object):
                 data = self.build_resources(instance_or_instances, links)
 
             if compound:
-                document['included'] = collector.get_linked_dict()
+                document['included'] = collector.get_included_resources() # TODO: maybe call this like get included data or something because relationships dict is different
             
             document['links'] = collector.get_links_dict()
 
@@ -77,25 +77,25 @@ class BaseResponder(object):
         # Filter out empty lists
         return dict([(k, d) for k, d in list(document.items()) if d])
 
-    def links(self, links, linked):
-        if linked is not None:
-            links = list(linked.keys())
+    def links(self, links, included):
+        if included is not None:
+            links = list(included.keys())
 
         return links
 
-    def build_root_links(self, collector, links):
+    def collect_links(self, collector, links):
         # Use the collector to build the links structure
         for key in links:
-            collector.include_link(self, key)
+            collector.link(self, key)
 
-    def build_root_linked(self, collector, linked):
-        for key, instances in iteritems(linked):
+    def collect_included(self, collector, included):
+        for key, instances in iteritems(included):
             link = self.LINKS[key]
             responder = link['responder']()
 
             for instance in instances:
                 resource = responder.build_resource(instance)
-                collector.add_linked(responder.TYPE, self.id_access_key, resource)
+                collector.include(responder.TYPE, self.id_access_key, resource)
 
     def build_resources(self, instance_or_instances, links=None, collector=None):
         builder = lambda instance: self.build_resource(instance, links, collector)
@@ -117,7 +117,7 @@ class BaseResponder(object):
                 key = properties.get('key', link)
                 associated = self.pick(instance, key)
                 if collector:
-                    collector.include_link(self, link)
+                    collector.link(self, link)
 
             except KeyError:
                 # Ignore links when not defined in the object
@@ -153,9 +153,9 @@ class BaseResponder(object):
         if responder.LINKS and self.pick(instance, key):
             responder_links = list(responder.LINKS.keys())
             resource = responder_instance.build_resource(instance, responder_links, collector)
-            collector.add_linked(responder.TYPE, id, resource)
+            collector.include(responder.TYPE, id, resource)
         else:
-            collector.add_linked(responder.TYPE, id, instance)
+            collector.include(responder.TYPE, id, instance)
 
         return id
 

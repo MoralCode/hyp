@@ -6,8 +6,7 @@ class Adapter(BaseAdapter):
         self.schema = self.schema_class()
 
     def __call__(self, instance):
-        result = self.schema.dump(instance)
-        return result.data
+        return self.schema.dump(instance)
 
 
 class Responder(BaseResponder):

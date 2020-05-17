@@ -7,7 +7,7 @@ verify_ssl = true
 pytest = ">=2.5.2"
 coverage = ">=3.7.1"
 factory-boy = ">=2.3.1"
-marshmallow = ">=1.0-a"
+marshmallow = "~=3.0"
 schematics = ">=1.0"
 importlib-metadata = "*"
 

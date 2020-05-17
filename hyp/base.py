@@ -6,6 +6,7 @@ from .collector import Collector
 from six import iteritems
 
 from .helpers import *
+from .constants import JSONAPI_VERSION_DICT
 
 class NonCompliantException(Exception):
     pass
@@ -36,9 +37,7 @@ class BaseResponder(object):
         links = self.links(links, related)
 
         document = {
-            "jsonapi": {
-                "version": "1.0"
-            }
+            "jsonapi": JSONAPI_VERSION_DICT
         }
 
         if meta is not None:

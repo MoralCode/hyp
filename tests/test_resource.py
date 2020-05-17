@@ -1,7 +1,7 @@
 import json
 
 from fixtures import PostResponder
-
+from hyp.constants import JSONAPI_VERSION_DICT
 
 class TestBuild(object):
     def test_single(self):
@@ -13,7 +13,7 @@ class TestBuild(object):
                 'id': 1,
                 'type': 'posts'
             },
-            'jsonapi': {'version': '1.0'}
+            'jsonapi': JSONAPI_VERSION_DICT
         }
 
     def test_multiple(self):
@@ -33,7 +33,7 @@ class TestBuild(object):
                 'id': 2,
                 'type': 'posts'
             }],
-            'jsonapi': {'version': '1.0'}
+            'jsonapi': JSONAPI_VERSION_DICT
         }
 
 
@@ -49,7 +49,7 @@ class TestRespond(object):
                 'id': 1,
                 'type': 'posts'
             },
-            'jsonapi': {'version': '1.0'}
+            'jsonapi': JSONAPI_VERSION_DICT
         }
 
 

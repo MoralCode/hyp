@@ -101,10 +101,20 @@ class BaseResponder(object):
         builder = lambda instance: self.build_resource(instance, links, collector)
         return self.apply_to_object_or_list(builder, instance_or_instances)
 
-    def build_resource(self, instance, links=None, collector=None):
-        resource = self.adapter(instance)
+    def build_resource(self, instance, links=None, collector=None, meta=None, selflink=True):
+
+        resource = build_resource_identifier(self.TYPE, instance[self.id_access_key])
+        
+        resource["attributes"] = self.adapter(instance)
+        #remove the ID from the attributes section if necessary
+        if resource["attributes"][self.id_access_key]:
+            del resource["attributes"][self.id_access_key]
+
         if links is not None:
             resource['links'] = self.build_resource_links(instance, links, collector)
+        if meta is not None:
+            resource['meta'] = build_meta(meta)
+
         return resource
 
     def build_resource_links(self, instance, links, collector=None):

@@ -7,7 +7,14 @@ class TestBuild(object):
     def test_single(self):
         response = PostResponder.build({'id': 1, 'title': 'My title'})
 
-        assert response == {'posts': {'id': 1, 'title': 'My title'}}
+        assert response == {
+            'data': {
+                'attributes': {'title': 'My title'},
+                'id': 1,
+                'type': 'posts'
+            },
+            'jsonapi': {'version': '1.0'}
+        }
 
     def test_multiple(self):
         response = PostResponder.build([
@@ -16,10 +23,17 @@ class TestBuild(object):
         ])
 
         assert response == {
-            'posts': [
-                {'id': 1, 'title': 'A title'},
-                {'id': 2, 'title': 'Another title'},
-            ]
+            'data': [{
+                'attributes': {'title': 'A title'},
+                'id': 1,
+                'type': 'posts'
+            },
+            {
+                'attributes': {'title': 'Another title'},
+                'id': 2,
+                'type': 'posts'
+            }],
+            'jsonapi': {'version': '1.0'}
         }
 
 
@@ -30,7 +44,12 @@ class TestRespond(object):
         )
 
         assert json.loads(response) == {
-            'posts': {'id': 1, 'title': 'A title'}
+            'data': {
+                'attributes': {'title': 'A title'},
+                'id': 1,
+                'type': 'posts'
+            },
+            'jsonapi': {'version': '1.0'}
         }
 
 

@@ -1,6 +1,7 @@
 from hyp.schematics import Responder as SchematicsResponder
 
 from fixtures import PostResponder, PostSerializer, CommentResponder
+from hyp.constants import JSONAPI_VERSION_DICT
 
 
 class TestLinks(object):
@@ -14,7 +15,8 @@ class TestLinks(object):
         response = PostResponder.build(post, links=['comments'])
 
         assert response == {
-            'posts': {
+            'jsonapi': JSONAPI_VERSION_DICT,
+            'data': {
                 'id': 1,
                 'title': 'My title',
                 'links': {
@@ -36,7 +38,8 @@ class TestLinks(object):
         response = PostResponder.build(post, links=['author'])
 
         assert response == {
-            'posts': {
+            'jsonapi': JSONAPI_VERSION_DICT,
+            'data': {
                 'id': 1,
                 'title': 'My title',
                 'links': {
@@ -61,7 +64,8 @@ class TestLinksWithMissingValues(object):
         response = PostResponder.build([p1, p2], links=['author'])
 
         assert response == {
-            'posts': [{
+            'jsonapi': JSONAPI_VERSION_DICT,
+            'data': [{
                 'id': 1,
                 'title': 'My title',
                 'links': {
@@ -87,7 +91,8 @@ class TestLinksWithMissingValues(object):
         response = PostResponder.build(post, links=['comments'])
 
         assert response == {
-            'posts': {
+            'jsonapi': JSONAPI_VERSION_DICT,
+            'data': {
                 'id': 1,
                 'title': 'My title',
                 'links': {},
@@ -119,7 +124,8 @@ class TestHref(object):
         response = MyPostResponder.build(post, links=['comments'])
 
         assert response == {
-            'posts': {
+            'jsonapi': JSONAPI_VERSION_DICT,
+            'data': {
                 'id': 1,
                 'title': 'My title',
                 'links': {

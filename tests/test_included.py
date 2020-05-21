@@ -5,6 +5,7 @@ from fixtures import (
     PersonResponder,
     PostSerializer,
 )
+from hyp.constants import JSONAPI_VERSION_DICT
 
 
 class TestIncluded(object):
@@ -21,7 +22,8 @@ class TestIncluded(object):
         })
 
         assert response == {
-            'posts': {
+            'jsonapi': JSONAPI_VERSION_DICT,
+            'data': {
                 'id': 1,
                 'title': 'My title',
                 'links': {
@@ -98,7 +100,8 @@ class TestIncluded(object):
         })
 
         assert response == {
-            'posts': {
+            'jsonapi': JSONAPI_VERSION_DICT,
+            'data': {
                 'id': 1,
                 'title': 'My title',
                 'links': {

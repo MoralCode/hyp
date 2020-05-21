@@ -2,6 +2,7 @@ from hyp.schematics import Responder as SchematicsResponder
 from hyp.collector import Collector
 
 from fixtures import PostResponder, PostSerializer, CommentResponder
+from hyp.constants import JSONAPI_VERSION_DICT
 
 
 class TestCollectorInternal(object):
@@ -53,7 +54,8 @@ class TestCollect(object):
         response = PostResponder.build(post, collect=True)
 
         assert response == {
-            'posts': {
+            'jsonapi': JSONAPI_VERSION_DICT,
+            'data': {
                 'id': 1,
                 'title': 'My title',
                 'links': {
@@ -85,7 +87,8 @@ class TestCollect(object):
         response = PostResponder.build(post, collect=True)
 
         assert response == {
-            'posts': {
+            'jsonapi': JSONAPI_VERSION_DICT,
+            'data': {
                 'id': 1,
                 'title': 'My title',
                 'links': {

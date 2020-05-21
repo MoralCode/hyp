@@ -94,7 +94,7 @@ class BaseResponder(object):
 
             for instance in instances:
                 resource = responder.build_resource(instance)
-                collector.include(responder.TYPE, responder.id_access_key, resource)
+                collector.include(responder.TYPE, instance[responder.id_access_key], resource)
 
     def build_resources(self, instance_or_instances, links=None, collector=None):
         builder = lambda instance: self.build_resource(instance, links, collector)
